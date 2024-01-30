@@ -24,7 +24,7 @@ ACameraSetup::ACameraSetup()
 
 	//Assign SpringArm class variables.
 	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(-60.0f, 0.0f, 0.0f));
-	SpringArmComp->TargetArmLength = 400.f;
+	SpringArmComp->TargetArmLength = SpringArmDefaultLength;
 	SpringArmComp->bEnableCameraLag = true; // smooth movement
 	SpringArmComp->CameraLagSpeed = 3.0f;
 

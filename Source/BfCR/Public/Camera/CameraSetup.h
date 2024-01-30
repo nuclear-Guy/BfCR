@@ -24,10 +24,13 @@ protected:
 	float FastCameraSpeed = 1400.0f;
 
 	UPROPERTY(EditAnywhere)
-	float ZoomSpeed = 20.0f;
+	float ZoomSpeed = 100.0f;
 
 	UPROPERTY(EditAnywhere)
-	float SpringArmMaxLength = 600.0f;
+	float SpringArmDefaultLength = 1200.0f;
+
+	UPROPERTY(EditAnywhere)
+	float SpringArmMaxLength = 3000.0f;
 
 	UPROPERTY(EditAnywhere)
 	float SpringArmMinLength = 200.0f;
