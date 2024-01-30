@@ -18,7 +18,10 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	float CameraSpeed = 200.0f;
+	float CameraSpeed = 800.0f;
+
+	UPROPERTY(EditAnywhere)
+	float FastCameraSpeed = 1400.0f;
 
 	UPROPERTY(EditAnywhere)
 	float ZoomSpeed = 20.0f;
@@ -36,6 +39,7 @@ protected:
 	bool ShouldRotateCamera = false;
 	FVector2D MouseLocation;
 	float ShouldZoom = 0.0f;
+	bool FastMoving = false;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -63,6 +67,9 @@ protected:
 
 	UFUNCTION()
 	void ZoomCamera(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void SwitchFastMode(const FInputActionValue& Value);
 
 public:	
 	// Called every frame

@@ -53,38 +53,56 @@ void ACameraSetup::Tick(float DeltaTime)
 
 		// Move by Mouse
 		{
-			FVector2D MovementInput;
-			FVector2D Percentage = MouseLocation / ViewPortSize;
+			if (!FastMoving) {
+				FVector2D MovementInput;
+				FVector2D Percentage = MouseLocation / ViewPortSize;
 
-			if (Percentage.X <= 0.02) {
-				MovementInput.Y = -1;
-			}
-			else if (Percentage.X >= 0.98) {
-				MovementInput.Y = 1;
+				if (Percentage.X <= 0.02) {
+					MovementInput.Y = -1;
+				}
+				else if (Percentage.X >= 0.98) {
+					MovementInput.Y = 1;
+				}
+				else {
+					MovementInput.Y = 0;
+				}
+
+				if (Percentage.Y <= 0.02) {
+					MovementInput.X = 1;
+				}
+				else if (Percentage.Y >= 0.98) {
+					MovementInput.X = -1;
+				}
+				else {
+					MovementInput.X = 0;
+				}
+
+				if (!MovementInput.IsZero())
+				{
+
+					FVector Location = GetActorLocation();
+					// Update the left/right movement based on the direction to the right of where we are facing
+					Location += SpringArmComp->GetRightVector() * CameraSpeed * MovementInput.Y * DeltaTime;
+
+					// Update the forward/backwards movement based on the yaw rotation, **ignoring pitch** so the camera remains level as it moves (looking down would otherwise pan the camera forward and down)
+					Location += FRotationMatrix(FRotator(0, SpringArmComp->GetRelativeRotation().Yaw, 0)).GetScaledAxis(EAxis::X) * CameraSpeed * MovementInput.X * DeltaTime;
+
+					SetActorLocation(Location);
+				}
 			}
 			else {
-				MovementInput.Y = 0;
-			}
+				FVector2D ScreenCenter(ViewPortSize.X / 2, ViewPortSize.Y / 2);
+				FVector2D Direction(MouseLocation.X - ScreenCenter.X, ScreenCenter.Y - MouseLocation.Y);
+				Direction = Direction.GetSafeNormal();
 
-			if (Percentage.Y <= 0.02) {
-				MovementInput.X = 1;
-			}
-			else if (Percentage.Y >= 0.98) {
-				MovementInput.X = -1;
-			}
-			else {
-				MovementInput.X = 0;
-			}
-
-			if (!MovementInput.IsZero())
-			{
+				UE_LOG(LogTemp, Warning, TEXT("Direction: %f %f"), Direction.X, Direction.Y);
 
 				FVector Location = GetActorLocation();
 				// Update the left/right movement based on the direction to the right of where we are facing
-				Location += SpringArmComp->GetRightVector() * CameraSpeed * MovementInput.Y * DeltaTime;
+				Location += SpringArmComp->GetRightVector() * FastCameraSpeed * Direction.X * DeltaTime;
 
 				// Update the forward/backwards movement based on the yaw rotation, **ignoring pitch** so the camera remains level as it moves (looking down would otherwise pan the camera forward and down)
-				Location += FRotationMatrix(FRotator(0, SpringArmComp->GetRelativeRotation().Yaw, 0)).GetScaledAxis(EAxis::X) * CameraSpeed * MovementInput.X * DeltaTime;
+				Location += FRotationMatrix(FRotator(0, SpringArmComp->GetRelativeRotation().Yaw, 0)).GetScaledAxis(EAxis::X) * FastCameraSpeed * Direction.Y * DeltaTime;
 
 				SetActorLocation(Location);
 			}
@@ -140,6 +158,10 @@ void ACameraSetup::ZoomCamera(const FInputActionValue& Value)
 	ShouldZoom = FMath::Clamp(SpringArmComp->TargetArmLength + ZoomAmount, SpringArmMinLength, SpringArmMaxLength);
 }
 
+void ACameraSetup::SwitchFastMode(const FInputActionValue& Value) {
+	FastMoving = Value.Get<bool>();
+}
+
 // Called to bind functionality to input
 void ACameraSetup::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -155,6 +177,7 @@ void ACameraSetup::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (InputActions) {
 		Input->BindAction(InputActions->RotateCamera, ETriggerEvent::Triggered, this, &ACameraSetup::RotateCamera);
 		Input->BindAction(InputActions->ZoomCamera, ETriggerEvent::Triggered, this, &ACameraSetup::ZoomCamera);
+		Input->BindAction(InputActions->CameraFastMoving, ETriggerEvent::Triggered, this, &ACameraSetup::SwitchFastMode);
 	}
 }
 
