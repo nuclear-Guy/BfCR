@@ -2,8 +2,6 @@
 
 
 #include "Unit/Swordsman.h"
-#include "UObject/ConstructorHelpers.h"
-
 
 ASwordsman::ASwordsman() {
 

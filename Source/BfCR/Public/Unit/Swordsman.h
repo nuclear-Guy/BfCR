@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Unit/UnitParent.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Swordsman.generated.h"
 
 /**

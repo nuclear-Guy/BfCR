@@ -1,9 +1,4 @@
 #include "Camera/CameraSetup.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACameraSetup::ACameraSetup()
@@ -30,6 +25,14 @@ ACameraSetup::ACameraSetup()
 
 	//Take control of the default Player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+	// Actions
+	static ConstructorHelpers::FObjectFinder<UInputDataConfig> ContextFinder(TEXT("/Script/BfCR.InputDataConfig'/Game/Inputs/InputConfig.InputConfig'"));
+
+	if (ContextFinder.Succeeded())
+	{
+		InputActions = ContextFinder.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -165,13 +168,6 @@ void ACameraSetup::SwitchFastMode(const FInputActionValue& Value) {
 // Called to bind functionality to input
 void ACameraSetup::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-
-	Subsystem->ClearAllMappings();
-	Subsystem->AddMappingContext(InputMapping, 0);
-
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
 	if (InputActions) {

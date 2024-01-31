@@ -3,6 +3,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Input/InputDataConfig.h"
+#include "GameMode/GamePlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "CameraSetup.generated.h"
 
 class UInputMappingContext;
@@ -43,6 +49,7 @@ protected:
 	FVector2D MouseLocation;
 	float ShouldZoom = 0.0f;
 	bool FastMoving = false;
+	UInputDataConfig* InputActions;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -56,14 +63,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* StaticMeshComp;
-
-
-	/** MappingContext for player input. */
-	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-	UInputMappingContext* InputMapping;
-
-	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-	UInputDataConfig* InputActions;
 
 	UFUNCTION()
 	void RotateCamera(const FInputActionValue& Value);
