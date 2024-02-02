@@ -11,6 +11,7 @@
 #include "Materials/Material.h"
 #include "Materials/MaterialInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Unit/UnitParent.h"
 
 
 #include "HUD_MouseSelection.generated.h"
@@ -29,7 +30,10 @@ protected:
 
     UInputDataConfig* InputActions;
     bool ShouldSelect = false;
+    bool ShouldGetActors = false;
     FVector2D StartPosition;
+    FVector2D StopPosition;
+    TArray<AUnitParent*> ActorsInSelectionRect;
 
     //Draw HUD
     //void DrawHUD_Reset();

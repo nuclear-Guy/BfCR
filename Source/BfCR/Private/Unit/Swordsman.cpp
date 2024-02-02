@@ -5,7 +5,7 @@
 
 ASwordsman::ASwordsman() {
 
-	UStaticMeshComponent* SwordsmanBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	/*UStaticMeshComponent* SwordsmanBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	SwordsmanBody->SetupAttachment(RootComponent);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SwordsmanAsset(TEXT("/Script/Engine.StaticMesh'/Game/Characters/Meshes/Swordsman/StaticMesh.StaticMesh'"));
@@ -16,7 +16,7 @@ ASwordsman::ASwordsman() {
 		SwordsmanBody->SetRelativeLocation(FVector(0.0f, 0.0f, -GetDefaultHalfHeight()));
 		SwordsmanBody->SetWorldScale3D(FVector(1.f));
 		SwordsmanBody->AddRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-	}
+	}*/
 
 }
 

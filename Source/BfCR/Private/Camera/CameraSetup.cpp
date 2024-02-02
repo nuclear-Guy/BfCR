@@ -22,6 +22,7 @@ ACameraSetup::ACameraSetup()
 	SpringArmComp->TargetArmLength = SpringArmDefaultLength;
 	SpringArmComp->bEnableCameraLag = true; // smooth movement
 	SpringArmComp->CameraLagSpeed = 3.0f;
+	SpringArmComp->bDoCollisionTest = false;
 
 	//Take control of the default Player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;

@@ -19,14 +19,35 @@ void AHUD_MouseSelection::DrawHUD() {
 
 		if (PlayerController->GetMousePosition(MouseLocation.X, MouseLocation.Y)) {
 			DrawRect(FLinearColor(0.8f, 0.1f, 0.0f, 0.2f), StartPosition.X, StartPosition.Y, MouseLocation.X - StartPosition.X, MouseLocation.Y - StartPosition.Y);
+			StopPosition = MouseLocation;
 		}
+	}
+
+	if (ShouldGetActors) {
+		for (AUnitParent*& Actor : ActorsInSelectionRect)
+		{
+			Actor->GetMesh()->SetRenderCustomDepth(false);
+		}
+
+		ActorsInSelectionRect.Empty();
+
+		GetActorsInSelectionRectangle(StartPosition, StopPosition, ActorsInSelectionRect, false, true);
+		for (AUnitParent*& Actor : ActorsInSelectionRect)
+		{
+			Actor->GetMesh()->SetRenderCustomDepth(true);
+			Actor->GetMesh()->SetCustomDepthStencilValue(1);
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Count %d %f %f"), ActorsInSelectionRect.Num(), StartPosition.X - StopPosition.X, StartPosition.Y - StopPosition.Y);
+
+		ShouldGetActors = false;
 	}
 }
 
 void AHUD_MouseSelection::SetSelectedQuad(const FInputActionValue& Value)
 {
+	ShouldGetActors = !Value.Get<bool>() && ShouldSelect;
 	ShouldSelect = Value.Get<bool>();
-	UE_LOG(LogTemp, Warning, TEXT("HUD %s"), (Value.Get<bool>() ? TEXT("true") : TEXT("false")));
 
 	if (ShouldSelect) {
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
