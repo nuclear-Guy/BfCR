@@ -12,6 +12,7 @@
 #include "Materials/MaterialInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Unit/UnitParent.h"
+#include "AIController.h"
 
 
 #include "HUD_MouseSelection.generated.h"

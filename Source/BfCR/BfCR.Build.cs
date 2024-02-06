@@ -10,7 +10,16 @@ public class BfCR : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "EnhancedInput", "Core", "CoreUObject", "Engine", "InputCore" });
+        PublicDependencyModuleNames.AddRange(new string[] { 
+			"EnhancedInput", 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"AIModule",
+			"GameplayTasks",
+			"NavigationSystem"
+		});
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 

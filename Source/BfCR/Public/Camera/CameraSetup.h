@@ -8,7 +8,6 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "CameraSetup.generated.h"
 
 class UInputMappingContext;

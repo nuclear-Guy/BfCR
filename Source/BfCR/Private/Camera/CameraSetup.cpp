@@ -1,4 +1,5 @@
 #include "Camera/CameraSetup.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACameraSetup::ACameraSetup()
@@ -123,7 +124,7 @@ void ACameraSetup::Tick(float DeltaTime)
 				const FRotator CurrentRot = SpringArmComp->GetRelativeRotation().GetNormalized();
 
 				// Update our rotation based on 100% movement equals 180 degrees rotation, limiting pitch to near vertical to limit issues at -90 and 90 degrees
-				SpringArmComp->SetRelativeRotation(FRotator(FMath::Clamp<float>(CurrentRot.Pitch + (YPercent * 180), -88, 88)/*CurrentRot.Pitch*/,
+				SpringArmComp->SetRelativeRotation(FRotator(FMath::Clamp<float>(CurrentRot.Pitch + (YPercent * 180), -88, 0)/*CurrentRot.Pitch*/,
 					CurrentRot.Yaw + (XPercent * 180), 0));
 			}
 		}
@@ -169,6 +170,8 @@ void ACameraSetup::SwitchFastMode(const FInputActionValue& Value) {
 // Called to bind functionality to input
 void ACameraSetup::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
 	if (InputActions) {

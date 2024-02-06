@@ -27,15 +27,18 @@ void AHUD_MouseSelection::DrawHUD() {
 		for (AUnitParent*& Actor : ActorsInSelectionRect)
 		{
 			Actor->GetMesh()->SetRenderCustomDepth(false);
+			Actor->SetStatusBusy(false);
 		}
 
 		ActorsInSelectionRect.Empty();
 
+		// TODO custom function
 		GetActorsInSelectionRectangle(StartPosition, StopPosition, ActorsInSelectionRect, false, true);
 		for (AUnitParent*& Actor : ActorsInSelectionRect)
 		{
 			Actor->GetMesh()->SetRenderCustomDepth(true);
 			Actor->GetMesh()->SetCustomDepthStencilValue(1);
+			Actor->SetStatusBusy(true);
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("Count %d %f %f"), ActorsInSelectionRect.Num(), StartPosition.X - StopPosition.X, StartPosition.Y - StopPosition.Y);
