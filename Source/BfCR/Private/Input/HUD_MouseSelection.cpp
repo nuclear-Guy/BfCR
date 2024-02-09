@@ -33,7 +33,7 @@ void AHUD_MouseSelection::DrawHUD() {
 		ActorsInSelectionRect.Empty();
 
 		// TODO custom function
-		GetActorsInSelectionRectangle(StartPosition, StopPosition, ActorsInSelectionRect, false, true);
+		GetActorsInSelectionRectangle(StartPosition, StopPosition, ActorsInSelectionRect, false, false);
 		for (AUnitParent*& Actor : ActorsInSelectionRect)
 		{
 			Actor->GetMesh()->SetRenderCustomDepth(true);
@@ -56,6 +56,16 @@ void AHUD_MouseSelection::SetSelectedQuad(const FInputActionValue& Value)
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		PlayerController->GetMousePosition(StartPosition.X, StartPosition.Y);
 	}
+}
+
+bool AHUD_MouseSelection::GetLeaderPosition(FVector& Pos)
+{
+	for (AUnitParent*& Actor : ActorsInSelectionRect) {
+		Pos = Actor->GetActorLocation();
+		return true;
+	}
+
+	return false;
 }
 
 void AHUD_MouseSelection::BeginPlay() {

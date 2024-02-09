@@ -4,6 +4,9 @@
 #include "Unit/UnitParent.h"
 #include "Unit/UnitAIController.h"
 #include "Kismet/GameplayStatics.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
+//#include "Components/SplineComponent.h"
 
 void AUnitParent::MoveTask(const FInputActionValue& Value)
 {
@@ -18,11 +21,31 @@ void AUnitParent::MoveTask(const FInputActionValue& Value)
 			if (GetWorld()->LineTraceSingleByChannel(OutHit, WorldLocation, WorldLocation + (WorldDirection * 100000.f), ECollisionChannel::ECC_WorldStatic)) {
 				if (OutHit.bBlockingHit) {
 					UE_LOG(LogTemp, Warning, TEXT("Move: %f %f %f"), OutHit.Location.X, OutHit.Location.Y, OutHit.Location.Z);
-					UnitAI->MoveToLocation(OutHit.Location, 20.f);
+					UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+					UNavigationPath* PathData = NavSys->FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), OutHit.Location);
+
+					//PathSpline->ClearSplinePoints();
+
+					if (PathData != NULL) {
+						FAIMoveRequest Request;
+						Request.SetAcceptanceRadius(20.0f);
+						UnitAI->RequestMove(Request, PathData->GetPath());
+
+						/*PathSpline->SetSplinePoints(PathData->PathPoints, ESplineCoordinateSpace::World);
+
+						int i = 0;
+						for (FNavPathPoint Point : PathData->PathPoints) {
+							FSplinePoint SplinePoint(i, Point, ESplinePointType::CurveClamped);
+							PathSpline->AddPoint(SplinePoint, false);
+							i++;
+						}
+
+						PathSpline->UpdateSpline();*/
+					}
 				}
 			}
+
 		}
-		
 	}
 }
 
@@ -42,6 +65,8 @@ AUnitParent::AUnitParent()
 
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	//PathSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Path"));
 }
 
 // Called when the game starts or when spawned

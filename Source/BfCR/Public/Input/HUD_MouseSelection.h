@@ -14,7 +14,6 @@
 #include "Unit/UnitParent.h"
 #include "AIController.h"
 
-
 #include "HUD_MouseSelection.generated.h"
 
 /**
@@ -43,4 +42,7 @@ protected:
     virtual void BeginPlay() override;
 
     void SetSelectedQuad(const FInputActionValue& Value);
+
+public:
+    bool GetLeaderPosition(FVector& Pos);
 };

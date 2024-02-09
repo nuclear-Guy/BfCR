@@ -46,6 +46,8 @@ protected:
 	// Invisible in editor
 	bool ShouldRotateCamera = false;
 	FVector2D MouseLocation;
+	FVector TargetLocation;
+	bool ShouldMoveToTarget = false;
 	float ShouldZoom = 0.0f;
 	bool FastMoving = false;
 	UInputDataConfig* InputActions;
@@ -71,6 +73,9 @@ protected:
 
 	UFUNCTION()
 	void SwitchFastMode(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void FocusOnCharacter(const FInputActionValue& Value);
 
 public:	
 	// Called every frame

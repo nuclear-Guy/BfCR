@@ -1,5 +1,7 @@
 #include "Camera/CameraSetup.h"
 #include "Kismet/GameplayStatics.h"
+#include "Input/HUD_MouseSelection.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ACameraSetup::ACameraSetup()
@@ -136,10 +138,19 @@ void ACameraSetup::Tick(float DeltaTime)
 				SpringArmComp->TargetArmLength = FMath::FInterpTo(SpringArmComp->TargetArmLength, ShouldZoom, DeltaTime, ZoomSpeed);
 			}
 		}
+
+		// Move to target
+		{
+			if (ShouldMoveToTarget) {
+				const FVector InterpLocation = UKismetMathLibrary::VInterpTo(GetActorLocation(), FVector(TargetLocation.X, TargetLocation.Y, GetActorLocation().Z), DeltaTime, FastCameraSpeed);
+				SetActorLocation(InterpLocation);
+				ShouldMoveToTarget = false;
+			}
+		}
 	}
 }
 
-void ACameraSetup::RotateCamera(const FInputActionValue& Value) 
+void ACameraSetup::RotateCamera(const FInputActionValue& Value)
 {
 	ShouldRotateCamera = Value.Get<bool>();
 	UE_LOG(LogTemp, Warning, TEXT("The boolean value is %s"), (ShouldRotateCamera ? TEXT("true") : TEXT("false")));
@@ -167,6 +178,20 @@ void ACameraSetup::SwitchFastMode(const FInputActionValue& Value) {
 	FastMoving = Value.Get<bool>();
 }
 
+void ACameraSetup::FocusOnCharacter(const FInputActionValue& Value)
+{
+	if (Value.Get<bool>()) {
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		AHUD_MouseSelection* HUD = Cast<AHUD_MouseSelection>(PlayerController->GetHUD());
+
+		FVector FocusPosition;
+		if (HUD->GetLeaderPosition(FocusPosition)) {
+			TargetLocation = FocusPosition;
+			ShouldMoveToTarget = true;
+		}
+	}
+}
+
 // Called to bind functionality to input
 void ACameraSetup::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -178,6 +203,7 @@ void ACameraSetup::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		Input->BindAction(InputActions->RotateCamera, ETriggerEvent::Triggered, this, &ACameraSetup::RotateCamera);
 		Input->BindAction(InputActions->ZoomCamera, ETriggerEvent::Triggered, this, &ACameraSetup::ZoomCamera);
 		Input->BindAction(InputActions->CameraFastMoving, ETriggerEvent::Triggered, this, &ACameraSetup::SwitchFastMode);
+		Input->BindAction(InputActions->Focus, ETriggerEvent::Triggered, this, &ACameraSetup::FocusOnCharacter);
 	}
 }
 
