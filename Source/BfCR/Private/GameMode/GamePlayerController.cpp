@@ -1,4 +1,7 @@
 #include "GameMode/GamePlayerController.h"
+#include "Blueprint/UserWidget.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Input/ButtonWidget.h"
 
 AGamePlayerController::AGamePlayerController() {
 	//!!! need to include "InputMappingContext.h"
@@ -10,6 +13,22 @@ AGamePlayerController::AGamePlayerController() {
 	{
 		InputMapping = ContextFinder_Mapping.Object;
 	}
+
+	// get widget blueprint class --- this not works with blueprint, need to create class
+	/*static ConstructorHelpers::FClassFinder<UUserWidget> WidgetBPClassFinder(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/WB_CommonButtons.WB_CommonButtons'"));
+	if (WidgetBPClassFinder.Succeeded())
+	{
+		WidgetBPClass = WidgetBPClassFinder.Class;
+	}*/
+
+}
+
+void AGamePlayerController::AddGroupOfUnits()
+{
+}
+
+void AGamePlayerController::SaveGame()
+{
 }
 
 void AGamePlayerController::BeginPlay() {
@@ -28,4 +47,13 @@ void AGamePlayerController::BeginPlay() {
 
 	Subsystem->ClearAllMappings();
 	Subsystem->AddMappingContext(InputMapping, 0);
+
+	// Add widgets to viewport
+	if (IsValid(WidgetBPClass)) {
+		UUserWidget* UI = Cast<UUserWidget>(CreateWidget(GetWorld(), WidgetBPClass));
+		if (UI) {
+			UI->AddToViewport();
+		}
+	}
+	
 }

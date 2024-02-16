@@ -7,8 +7,6 @@
 #include "InputAction.h"
 #include "InputDataConfig.generated.h"
 
-
-
 UCLASS()
 class BFCR_API UInputDataConfig : public UDataAsset
 {

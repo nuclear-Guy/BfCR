@@ -4,9 +4,9 @@
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "UObject/ConstructorHelpers.h"
 #include "InputMappingContext.h"
 #include "Input/InputDataConfig.h"
+#include "Engine/DataTable.h"
 #include "GamePlayerController.generated.h"
 
 
@@ -27,5 +27,14 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UInputMappingContext* InputMapping;
+
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	TSubclassOf<UUserWidget> WidgetBPClass;
+
+	UFUNCTION()
+	void AddGroupOfUnits();
+
+	UFUNCTION()
+	void SaveGame();
 
 };
