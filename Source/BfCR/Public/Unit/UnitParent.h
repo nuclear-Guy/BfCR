@@ -16,7 +16,6 @@ class BFCR_API AUnitParent : public ACharacter
 {
 	GENERATED_BODY()
 
-	bool Busy = false;
 	UInputDataConfig* InputActions;
 
 protected:
@@ -26,9 +25,6 @@ protected:
 	UPROPERTY()
 	AUnitAIController* UnitAI;
 
-	UFUNCTION()
-	void MoveTask(const FInputActionValue& Value);
-
 public:	
 	// Sets default values for this character's properties
 	AUnitParent();
@@ -36,9 +32,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetStatusBusy(bool status);
-	bool IsBusy();
-
 	UFUNCTION()
 	void SetAIController(AUnitAIController* NewAIController) { UnitAI = NewAIController; }
+
+	UFUNCTION()
+	AUnitAIController* GetAIController() { return UnitAI; }
+
+	UFUNCTION()
+	void MoveToLocationTask(FVector Location);
 };

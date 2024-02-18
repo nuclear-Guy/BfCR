@@ -4,6 +4,7 @@
 #include "Input/CommonWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/GamePlayerController.h"
+#include "Input/HUD_MouseSelection.h"
 
 void UCommonWidget::NativeOnInitialized()
 {
@@ -35,5 +36,19 @@ void UCommonWidget::OnButtonClicked(UButtonWidget* Button, TEnumAsByte<EButtons>
 	if (PlayerController) {
 		// reaction
 		UE_LOG(LogTemp, Warning, TEXT("Player Controller react on button!!!"));
+		AHUD_MouseSelection* HUD = Cast<AHUD_MouseSelection>(PlayerController->GetHUD());
+
+		switch (ButtonType)
+		{
+		case EButtons::Line:
+			HUD->BuildFormationLine();
+			break;
+		case EButtons::Rectangle:
+			HUD->BuildFormationRectangle();
+			break;
+		default:
+			break;
+		}
+
 	}
 }

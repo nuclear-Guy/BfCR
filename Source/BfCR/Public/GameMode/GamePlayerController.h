@@ -9,6 +9,8 @@
 #include "Engine/DataTable.h"
 #include "GamePlayerController.generated.h"
 
+class AUnitParent;
+class Squad;
 
 /**
  *

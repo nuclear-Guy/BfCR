@@ -35,14 +35,14 @@ protected:
     FVector2D StopPosition;
     TArray<AUnitParent*> ActorsInSelectionRect;
 
-    //Draw HUD
-    //void DrawHUD_Reset();
     virtual void DrawHUD() override;
-
     virtual void BeginPlay() override;
 
     void SetSelectedQuad(const FInputActionValue& Value);
+    void SquadMoveTo(const FInputActionValue& Value);
 
 public:
     bool GetLeaderPosition(FVector& Pos);
+    void BuildFormationLine();
+    void BuildFormationRectangle();
 };

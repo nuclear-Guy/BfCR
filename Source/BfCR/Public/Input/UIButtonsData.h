@@ -8,7 +8,7 @@
 
 UENUM(BlueprintType)
 enum EButtons {
-	AddUnit UMETA(DisplayName = "Add Unit"),
+	AddUnit UMETA(DisplayName = "Create group"),
 	Save UMETA(DisplayName = "Save"),
 	Line UMETA(DisplayName = "w"),
 	Rectangle UMETA(DisplayName = "a")

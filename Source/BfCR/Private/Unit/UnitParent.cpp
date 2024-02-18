@@ -6,46 +6,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
-//#include "Components/SplineComponent.h"
 
-void AUnitParent::MoveTask(const FInputActionValue& Value)
+void AUnitParent::MoveToLocationTask(FVector Location)
 {
-	if (Busy && Value.Get<bool>()) {
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	UNavigationPath* PathData = NavSys->FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), Location);
 
-		FVector WorldDirection;
-		FVector WorldLocation;
-		if (PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection)) {
-			FHitResult OutHit;
-
-			if (GetWorld()->LineTraceSingleByChannel(OutHit, WorldLocation, WorldLocation + (WorldDirection * 100000.f), ECollisionChannel::ECC_WorldStatic)) {
-				if (OutHit.bBlockingHit) {
-					UE_LOG(LogTemp, Warning, TEXT("Move: %f %f %f"), OutHit.Location.X, OutHit.Location.Y, OutHit.Location.Z);
-					UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-					UNavigationPath* PathData = NavSys->FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), OutHit.Location);
-
-					//PathSpline->ClearSplinePoints();
-
-					if (PathData != NULL) {
-						FAIMoveRequest Request;
-						Request.SetAcceptanceRadius(20.0f);
-						UnitAI->RequestMove(Request, PathData->GetPath());
-
-						/*PathSpline->SetSplinePoints(PathData->PathPoints, ESplineCoordinateSpace::World);
-
-						int i = 0;
-						for (FNavPathPoint Point : PathData->PathPoints) {
-							FSplinePoint SplinePoint(i, Point, ESplinePointType::CurveClamped);
-							PathSpline->AddPoint(SplinePoint, false);
-							i++;
-						}
-
-						PathSpline->UpdateSpline();*/
-					}
-				}
-			}
-
-		}
+	if (PathData != NULL) {
+		FAIMoveRequest Request;
+		Request.SetAcceptanceRadius(0.5f);
+		UnitAI->RequestMove(Request, PathData->GetPath());
 	}
 }
 
@@ -56,44 +26,24 @@ AUnitParent::AUnitParent()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Actions
-	static ConstructorHelpers::FObjectFinder<UInputDataConfig> ContextFinder(TEXT("/Script/BfCR.InputDataConfig'/Game/Inputs/InputConfig.InputConfig'"));
+	/*static ConstructorHelpers::FObjectFinder<UInputDataConfig> ContextFinder(TEXT("/Script/BfCR.InputDataConfig'/Game/Inputs/InputConfig.InputConfig'"));
 
 	if (ContextFinder.Succeeded())
 	{
 		InputActions = ContextFinder.Object;
-	}
-
+	}*/
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	//PathSpline = CreateDefaultSubobject<USplineComponent>(TEXT("Path"));
 }
 
 // Called when the game starts or when spawned
 void AUnitParent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
-
-	if (InputActions) {
-		Input->BindAction(InputActions->MoveToTarget, ETriggerEvent::Triggered, this, &AUnitParent::MoveTask);
-	}
 }
 
 // Called every frame
 void AUnitParent::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void AUnitParent::SetStatusBusy(bool status)
-{
-	Busy = status;
-}
-
-bool AUnitParent::IsBusy()
-{
-	return Busy;
 }
